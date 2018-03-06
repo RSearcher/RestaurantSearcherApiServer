@@ -7,5 +7,5 @@ import (
 
 func setRoutes(r *gin.Engine) {
 	r.GET("/ping", route.Ping)
-	r.GET("/restaurants/:id", route.GetRestaurantById)
+	r.POST("/restaurants/:id", route.GetRestaurantById)
 }
