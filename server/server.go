@@ -1,14 +1,17 @@
 package server
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/olivere/elastic"
+)
 
-func Run() {
-	r := setupRouter()
-	r.Run(":8080")
-}
-
-func setupRouter() *gin.Engine {
+func Run(elasticClient elastic.Client) {
 	r := gin.Default()
+
+	r.Use(func(c *gin.Context) {
+		c.Set("Elasticsearch", elasticClient)
+		c.Next()
+	})
 	setRoutes(r)
-	return r
+	r.Run(":8080")
 }
