@@ -7,14 +7,16 @@ import (
 	"context"
 )
 
+type Request struct {
+	Index	string	`json:"index"`
+	Type	string	`json:"type"`
+	Id		string	`json:"id"`
+}
+
 func GetRestaurantById(c *gin.Context) {
 	client := c.MustGet("ESClient").(*elastic.Client)
 
-	req := struct {
-		Index	string	`json:"index"`
-		Type	string	`json:"type"`
-		Id		string	`json:"id"`
-	}{}
+	var req Request
 
 	if err := c.BindJSON(&req); err == nil {
 		resp, err := client.Get().
