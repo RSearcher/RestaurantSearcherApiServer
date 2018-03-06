@@ -9,6 +9,8 @@ import (
 func main() {
 	c := config.LoadConfig()
 
+	println(c.Elasticsearch.Endpoint)
+
 	esClient, err := elastic.NewClient(
 		elastic.SetURL(c.Elasticsearch.Endpoint),
 		elastic.SetScheme("https"),

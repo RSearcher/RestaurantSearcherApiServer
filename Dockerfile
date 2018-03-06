@@ -1,12 +1,10 @@
-FROM golang:1.8
+FROM golang:1.9
 
 ENV APPNAME RestaurantSearcherAPI
 
-ADD . /go/src/$APPNAME
+RUN mkdir -p /go/src/$APPNAME
 WORKDIR /go/src/$APPNAME
 
-EXPOSE 8080
+ADD . /go/src/$APPNAME
 
-RUN go get
-
-CMD ["go", "run", "main.go"]
+RUN go get -v

@@ -18,19 +18,19 @@ func GetRestaurantById(c *gin.Context) {
 
 	var req Request
 
-	if err := c.BindJSON(&req); err == nil {
-		resp, err := client.Get().
-			Index(req.Index).
-			Type(req.Type).
-			Id(req.Id).
-			Do(context.Background())
-
-		if err != nil {
-			c.AbortWithError(http.StatusNotFound, err)
-		}
-
-		c.JSON(http.StatusOK, resp)
-	} else {
+	if err := c.BindJSON(&req); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 	}
+
+	resp, err := client.Get().
+		Index(req.Index).
+		Type(req.Type).
+		Id(req.Id).
+		Do(context.Background())
+
+	if err != nil {
+		c.AbortWithError(http.StatusNotFound, err)
+	}
+
+	c.JSON(http.StatusOK, resp)
 }
