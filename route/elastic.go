@@ -3,30 +3,30 @@ package route
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"fmt"
 	"github.com/olivere/elastic"
 	"context"
 )
 
-type IndexRequest struct {
-	Index string `json:"index"`
-}
-
-type resp struct {
-	Exist	bool `json:"exist"`
-}
-
-func ExistIndex(c *gin.Context) {
-	var req IndexRequest
-
+func GetRestaurantById(c *gin.Context) {
 	client := c.MustGet("ESClient").(*elastic.Client)
 
+	req := struct {
+		Index	string	`json:"index"`
+		Type	string	`json:"type"`
+		Id		string	`json:"id"`
+	}{}
+
 	if err := c.BindJSON(&req); err == nil {
-		exists, err := client.IndexExists(req.Index).Do(context.Background())
+		resp, err := client.Get().
+			Index(req.Index).
+			Type(req.Type).
+			Id(req.Id).
+			Do(context.Background())
+
 		if err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			c.AbortWithError(http.StatusNotFound, err)
 		}
-		resp := &resp{exists}
+
 		c.JSON(http.StatusOK, resp)
 	} else {
 		c.AbortWithError(http.StatusBadRequest, err)
