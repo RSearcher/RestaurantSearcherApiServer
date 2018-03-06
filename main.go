@@ -9,7 +9,7 @@ import (
 func main() {
 	c := config.LoadConfig()
 
-	client, err := elastic.NewClient(
+	esClient, err := elastic.NewClient(
 		elastic.SetURL(c.Elasticsearch.Endpoint),
 		elastic.SetScheme("https"),
 		elastic.SetSniff(false),
@@ -18,5 +18,9 @@ func main() {
 		panic(err)
 	}
 
-	server.Run(*client)
+	defer esClient.Stop()
+
+	routes := server.SetupServer(esClient)
+
+	server.Run(routes)
 }

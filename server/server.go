@@ -5,19 +5,19 @@ import (
 	"github.com/olivere/elastic"
 )
 
-func Run(elasticClient elastic.Client) {
-	r := setupRouter(elasticClient)
+func Run(r *gin.Engine) {
 	r.Run(":8080")
 }
 
-func setupRouter(elasticClient elastic.Client) *gin.Engine {
+func SetupServer(ESClient *elastic.Client) *gin.Engine {
 	r := gin.Default()
 
 	r.Use(func(c *gin.Context) {
-		c.Set("Elasticsearch", elasticClient)
+		c.Set("ESClient", ESClient)
 		c.Next()
 	})
 
 	setRoutes(r)
+
 	return r
 }

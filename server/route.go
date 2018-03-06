@@ -7,5 +7,5 @@ import (
 
 func setRoutes(r *gin.Engine) {
 	r.GET("/ping", route.Ping)
-	r.GET("/alive_elastic", route.AliveElastic)
+	r.GET("/exist_index:index_name", route.ExistIndex)
 }
