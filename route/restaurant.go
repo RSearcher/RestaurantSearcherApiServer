@@ -5,27 +5,19 @@ import (
 	"net/http"
 	"github.com/olivere/elastic"
 	"context"
+	"RestaurantSearcherAPI/config"
 )
-
-type Request struct {
-	Index	string	`json:"index"`
-	Type	string	`json:"type"`
-	Id		string	`json:"id"`
-}
 
 func GetRestaurantById(c *gin.Context) {
 	client := c.MustGet("ESClient").(*elastic.Client)
+	conf := c.MustGet("Config").(*config.Config)
 
-	var req Request
-
-	if err := c.BindJSON(&req); err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
-	}
+	id := c.Param("id")
 
 	resp, err := client.Get().
-		Index(req.Index).
-		Type(req.Type).
-		Id(req.Id).
+		Index(conf.Elasticsearch.RestaurantsIndexName).
+		Type(conf.Elasticsearch.RestaurantsTypeName).
+		Id(id).
 		Do(context.Background())
 
 	if err != nil {
