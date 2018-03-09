@@ -2,15 +2,35 @@ version: '3'
 services:
   app:
     build: .
-    command: ["./wait-for-it.sh", "elastic:9200", "-t", "30", "--", "go", "run", "main.go"]
+    command: ["./wait-for-it.sh", "elastic:9200", "-t", "60", "--", "go", "run", "main.go"]
     volumes:
       - .:/go/src/RestaurantSearcherAPI
     ports:
       - "8080:8080"
     depends_on:
       - elasticsearch
+      - redis
   elasticsearch:
-    image: elasticsearch
+    image: elasticsearch:5.3.0
     command: elasticsearch
+    volumes:
+      - esdata:/var/lib/elastic
     ports:
       - "9200:9200"
+  kibana:
+    image: kibana:5.3.0
+    command: kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+  redis:
+    image: redis:latest
+    volumes:
+      - redisdata:/data
+
+volumes:
+  esdata:
+    driver: local
+  redisdata:
+    driver: local
