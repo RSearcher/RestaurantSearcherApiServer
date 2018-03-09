@@ -1,2 +1,6 @@
 [Elasticsearch]
-Endpoint    = "http://elasticsearch:9200"
+Endpoint                = "http://elasticsearch:9200"
+ReviewsIndexName        = "ratings"
+ReviewsTypeName         = "rating"
+RestaurantsIndexName    = "restaurants"
+RestaurantsTypeName     = "restaurant"

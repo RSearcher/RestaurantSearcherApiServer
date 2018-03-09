@@ -8,6 +8,10 @@ type Config struct {
 
 type ElasticsearchConfig struct {
 	Endpoint string
+	ReviewsIndexName string
+	ReviewsTypeName string
+	RestaurantsIndexName string
+	RestaurantsTypeName string
 }
 
 func LoadConfig() *Config {
