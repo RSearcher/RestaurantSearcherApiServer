@@ -3,19 +3,21 @@ package ml
 import (
 	"context"
 	"RestaurantSearcherAPI/models"
-	"net/url"
-	"strings"
 	"github.com/pkg/errors"
+	"github.com/gin-gonic/gin/json"
+	"bytes"
 )
 
 func (c *Client) ParseKNP(ctx context.Context, review *models.Review) (*models.ParsedText, error) {
 	spath := "/parse"
-	values := url.Values{}
 
-	values.Add("id", string(review.Id))
-	values.Add("body", review.Body)
+	input, err := json.Marshal(review)
+	if err != nil {
+		return nil, err
+	}
 
-	req, err := c.newRequest(ctx, "POST", spath, strings.NewReader(values.Encode()))
+	req, err := c.newRequest(ctx, "POST", spath, bytes.NewBuffer(input))
+	req.Header.Add("Content-Type", "application/json")
 	if err != nil {
 		return nil, err
 	}
