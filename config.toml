@@ -6,4 +6,4 @@ RestaurantsIndexName    = "restaurants"
 RestaurantsTypeName     = "restaurant"
 
 [MLServer]
-Endpoint    = "http://localhost:49152"
+Endpoint    = "http://192.168.0.11:49152"

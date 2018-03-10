@@ -8,7 +8,6 @@ services:
       - .:/go/src/RestaurantSearcherAPI
     ports:
       - "8080:8080"
-      - "49152:49152"
     depends_on:
       - elasticsearch
       - redis
@@ -17,6 +16,8 @@ services:
         - WAIT_START_CMD=go run main.go
         - WAIT_SLEEP=2
         - WAIT_LOOPS=100
+    extra_hosts:
+      - "local_dev:192.168.11.1"
   elasticsearch:
     image: elasticsearch:5.3.0
     command: elasticsearch
