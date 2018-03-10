@@ -8,6 +8,7 @@ services:
       - .:/go/src/RestaurantSearcherAPI
     ports:
       - "8080:8080"
+      - "49152:49152"
     depends_on:
       - elasticsearch
       - redis

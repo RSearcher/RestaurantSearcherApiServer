@@ -4,6 +4,7 @@ import (
 	"RestaurantSearcherAPI/config"
 	"RestaurantSearcherAPI/server"
 	"github.com/olivere/elastic"
+	"RestaurantSearcherAPI/ml"
 )
 
 func main() {
@@ -20,7 +21,12 @@ func main() {
 
 	defer esClient.Stop()
 
-	routes := server.SetupServer(conf, esClient)
+	mlClient, err := ml.NewClient(conf.MLServer.Endpoint)
+	if err != nil {
+		panic(err)
+	}
+
+	routes := server.SetupServer(conf, esClient, mlClient)
 
 	server.Run(routes)
 }

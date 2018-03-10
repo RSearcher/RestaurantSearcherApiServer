@@ -4,6 +4,7 @@ import "github.com/BurntSushi/toml"
 
 type Config struct {
 	Elasticsearch ElasticsearchConfig
+	MLServer MLServerConfig
 }
 
 type ElasticsearchConfig struct {
@@ -12,6 +13,10 @@ type ElasticsearchConfig struct {
 	ReviewsTypeName string
 	RestaurantsIndexName string
 	RestaurantsTypeName string
+}
+
+type MLServerConfig struct {
+	Endpoint string
 }
 
 func LoadConfig() *Config {

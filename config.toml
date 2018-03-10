@@ -4,3 +4,6 @@ ReviewsIndexName        = "ratings"
 ReviewsTypeName         = "rating"
 RestaurantsIndexName    = "restaurants"
 RestaurantsTypeName     = "restaurant"
+
+[MLServer]
+Endpoint    = "http://localhost:49152"

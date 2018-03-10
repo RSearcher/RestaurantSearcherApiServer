@@ -7,12 +7,9 @@ import (
 	"context"
 	"net/http"
 	"encoding/json"
+	"RestaurantSearcherAPI/models"
+	"RestaurantSearcherAPI/ml"
 )
-
-type Response struct {
-	Id int `json:"id"`
-	Body string `json:"body"`
-}
 
 func GetReviewById(c *gin.Context) {
 	esclient := c.MustGet("ESClient").(*elastic.Client)
@@ -30,9 +27,25 @@ func GetReviewById(c *gin.Context) {
 		c.AbortWithError(http.StatusNotFound, err)
 	}
 
-	var r Response
+	var r models.Review
 
 	json.Unmarshal(*resp.Source, &r)
 
 	c.JSON(http.StatusOK, r)
+}
+
+func ParseReview(c *gin.Context) {
+	mlclient := c.MustGet("MLClient").(*ml.Client)
+
+	var review *models.Review
+	if err := c.BindJSON(&review); err != nil {
+		c.JSON(http.StatusBadRequest, err)
+	}
+
+	parsedText, err := mlclient.ParseKNP(context.Background(), review)
+	if err != nil {
+		c.JSON(http.StatusBadGateway, err)
+	}
+
+	c.JSON(http.StatusOK, parsedText)
 }
