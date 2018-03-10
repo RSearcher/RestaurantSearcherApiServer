@@ -2,7 +2,8 @@ version: '3'
 services:
   app:
     build: .
-    command: ["./wait-for-it.sh", "elastic:9200", "-t", "60", "--", "go", "run", "main.go"]
+    command: ["sh", "wait-for-it.sh"]
+    working_dir: /go/src/RestaurantSearcherAPI
     volumes:
       - .:/go/src/RestaurantSearcherAPI
     ports:
@@ -10,6 +11,11 @@ services:
     depends_on:
       - elasticsearch
       - redis
+    environment:
+        - WAIT_COMMAND=[ $$(curl --write-out %{http_code} --silent --output /dev/null http://elasticsearch:9200/_cat/health?h=st) = 200 ]
+        - WAIT_START_CMD=go run main.go
+        - WAIT_SLEEP=2
+        - WAIT_LOOPS=100
   elasticsearch:
     image: elasticsearch:5.3.0
     command: elasticsearch
