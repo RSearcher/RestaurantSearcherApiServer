@@ -7,3 +7,6 @@ RestaurantsTypeName     = "restaurant"
 
 [MLServer]
 Endpoint    = "http://192.168.0.11:49152"
+
+[Redis]
+Endpoint    = "redis:6379"

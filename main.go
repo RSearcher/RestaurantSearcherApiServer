@@ -5,6 +5,7 @@ import (
 	"RestaurantSearcherAPI/server"
 	"github.com/olivere/elastic"
 	"RestaurantSearcherAPI/ml"
+	"github.com/go-redis/redis"
 )
 
 func main() {
@@ -26,7 +27,13 @@ func main() {
 		panic(err)
 	}
 
-	routes := server.SetupServer(conf, esClient, mlClient)
+	rsClient := redis.NewClient(&redis.Options{
+		Addr: conf.Redis.Endpoint,
+		Password: "",
+		DB: 0,
+	})
+
+	routes := server.SetupServer(conf, esClient, mlClient, rsClient)
 
 	server.Run(routes)
 }

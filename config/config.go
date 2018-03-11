@@ -5,6 +5,7 @@ import "github.com/BurntSushi/toml"
 type Config struct {
 	Elasticsearch ElasticsearchConfig
 	MLServer MLServerConfig
+	Redis RedisConfig
 }
 
 type ElasticsearchConfig struct {
@@ -16,6 +17,10 @@ type ElasticsearchConfig struct {
 }
 
 type MLServerConfig struct {
+	Endpoint string
+}
+
+type RedisConfig struct {
 	Endpoint string
 }
 

@@ -9,6 +9,8 @@ import (
 	"encoding/json"
 	"RestaurantSearcherAPI/models"
 	"RestaurantSearcherAPI/ml"
+	"github.com/go-redis/redis"
+	"strconv"
 )
 
 func GetReviewById(c *gin.Context) {
@@ -36,6 +38,7 @@ func GetReviewById(c *gin.Context) {
 
 func ParseReview(c *gin.Context) {
 	mlclient := c.MustGet("MLClient").(*ml.Client)
+	rsclient := c.MustGet("RSClient").(*redis.Client)
 
 	var review *models.Review
 	if err := c.BindJSON(&review); err != nil {
@@ -45,6 +48,16 @@ func ParseReview(c *gin.Context) {
 	parsedText, err := mlclient.ParseKNP(context.Background(), review)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, err)
+	}
+
+	parsedTextJson, err := json.Marshal(parsedText)
+	if err != nil {
+		c.JSON(http.StatusBadGateway, err)
+	}
+
+	Err := rsclient.Set(strconv.Itoa(review.Id), parsedTextJson, 0).Err()
+	if Err != nil {
+		panic(Err)
 	}
 
 	c.JSON(http.StatusOK, parsedText)
