@@ -42,22 +42,31 @@ func ParseReview(c *gin.Context) {
 
 	var review *models.Review
 	if err := c.BindJSON(&review); err != nil {
-		c.JSON(http.StatusBadRequest, err)
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	getErr := rsclient.Get(strconv.Itoa(review.Id)).Err()
+	if getErr == nil {
+		// Key is already existed
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 
 	parsedText, err := mlclient.ParseKNP(context.Background(), review)
 	if err != nil {
-		c.JSON(http.StatusBadGateway, err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
 	}
 
 	parsedTextJson, err := json.Marshal(parsedText)
 	if err != nil {
-		c.JSON(http.StatusBadGateway, err)
+		panic(err)
 	}
 
-	Err := rsclient.Set(strconv.Itoa(review.Id), parsedTextJson, 0).Err()
-	if Err != nil {
-		panic(Err)
+	setErr := rsclient.Set(strconv.Itoa(review.Id), parsedTextJson, 0).Err()
+	if setErr != nil {
+		panic(setErr)
 	}
 
 	c.JSON(http.StatusOK, parsedText)
